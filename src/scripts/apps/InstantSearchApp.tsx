@@ -1,5 +1,5 @@
 import { SearchClient } from "algoliasearch/lite";
-import { RefinementList, useInstantSearch, useSearchBox } from "react-instantsearch-hooks-web";
+import { ClearRefinements, CurrentRefinements, DynamicWidgets, RefinementList, useInstantSearch, useSearchBox } from "react-instantsearch-hooks-web";
 import PubSub from "pubsub-js";
 import aa from 'search-insights';
 import { createInsightsMiddleware } from 'instantsearch.js/es/middlewares';
@@ -95,22 +95,36 @@ const InstantSearchApp = ({ searchClient, indexId }: instantSearchParams) => {
         <CustomSearchBox indexId={indexId} />
         <main>
           <div className="menu">
-            <RefinementList
-              attribute="brand"
-              classNames={{ root: "brand-facets" }}
-            />
-            <HierarchicalMenu
-              attributes={[
-                "hierarchicalCategories.lvl0",
-                "hierarchicalCategories.lvl1",
-                "hierarchicalCategories.lvl2",
-                "hierarchicalCategories.lvl3",
-              ]}
-              separator=" > "
-              showMore={true}
-            />
+            <DynamicWidgets facets={['*']}>
+              <RefinementList
+                attribute="brand"
+                classNames={{ root: "brand-facets" }}
+              />
+              <HierarchicalMenu
+                attributes={[
+                  "hierarchicalCategories.lvl0",
+                  "hierarchicalCategories.lvl1",
+                  "hierarchicalCategories.lvl2",
+                  "hierarchicalCategories.lvl3",
+                ]}
+                separator=" > "
+                showMore={true}
+              />
+            </DynamicWidgets>
           </div>
           <div className="results">
+            <div className="refinements-container">
+              <CurrentRefinements transformItems={(items) => {
+                return items.map((item) => {
+                  if (item.label.includes('hierarchicalCategories')) {
+                    item.label = 'Category';
+                  }
+                  return item;
+                })
+              }} />
+              <ClearRefinements />
+            </div>
+
             <Hits hitComponent={HitComponent} />
             <Pagination />
           </div>

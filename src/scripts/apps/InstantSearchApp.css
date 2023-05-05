@@ -113,3 +113,23 @@
 .search-is .product-actions .conversion-btn {
   background-color: rgba(96, 185, 225, 0.671);
 }
+
+.search-is .refinements-container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.search-is .refinements-container .ais-ClearRefinements-button--disabled {
+  display: none;
+}
+.search-is .refinements-container .ais-ClearRefinements-button {
+  margin-left: 5px;
+}
+.search-is .refinements-container.ais-CurrentRefinements-item {
+  margin-right: 10px;
+}
+.search-is .refinements-container .ais-CurrentRefinements-categoryLabel {
+  padding: 0
+}
