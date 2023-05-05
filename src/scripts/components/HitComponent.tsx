@@ -1,6 +1,6 @@
 import { Highlight } from 'react-instantsearch-hooks-web';
 
-export const HitComponent = ({ hit }: any) => (
+export const HitComponent = ({ hit, sendEvent }: any) => (
   <div className="hit">
     <div className="hit-picture">
       <img src={`${hit.image}`} alt={hit.name} width={100} height={100} />
@@ -17,6 +17,12 @@ export const HitComponent = ({ hit }: any) => (
         <span> - ${hit.price}</span>
         <span> - {hit.rating} stars</span>
       </div>
+      <p className='product-actions'>
+        <button className="conversion-btn"
+          onClick={() => {
+            sendEvent('conversion', hit, 'Product Ordered');
+          }}>Add to cart</button>
+      </p>
     </div>
   </div>
 );

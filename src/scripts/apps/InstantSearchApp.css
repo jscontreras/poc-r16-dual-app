@@ -82,9 +82,11 @@
 
 .search-is .ais-Hits-item {
   flex-basis: 150px;
-  padding: 0;
+  padding: 0 0 50px 0;
   margin-top: 5px;
   margin-bottom: 5px;
+  position: relative;
+  align-items: center;
 }
 
 .search-is .ais-Pagination {
@@ -94,7 +96,20 @@
 }
 
 .search-is .brand-facets {
-  border-bottom: 1px solid #aaa;
+  border-bottom: 1px solid #aaaaaa;
   margin-bottom: 10px;
   padding: 10px 0;
+}
+
+.search-is .product-actions {
+  position: absolute;
+  bottom: 0;
+  width: fit-content;
+  text-align: center;
+  width: 130px;
+  height: 40px;
+}
+
+.search-is .product-actions .conversion-btn {
+  background-color: rgba(96, 185, 225, 0.671);
 }

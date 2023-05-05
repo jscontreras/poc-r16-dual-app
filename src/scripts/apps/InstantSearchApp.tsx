@@ -1,6 +1,27 @@
 import { SearchClient } from "algoliasearch/lite";
-import { RefinementList, useSearchBox } from "react-instantsearch-hooks-web";
+import { RefinementList, useInstantSearch, useSearchBox } from "react-instantsearch-hooks-web";
 import PubSub from "pubsub-js";
+import aa from 'search-insights';
+import { createInsightsMiddleware } from 'instantsearch.js/es/middlewares';
+
+// Set user token (this is dynamic!)
+aa('setUserToken', 'ma-user-999');
+// Set Insights Middleware
+function InsightsMiddleware() {
+  const { use } = useInstantSearch();
+
+  useEffect(() => {
+    const middleware = createInsightsMiddleware({
+      insightsClient: aa,
+    });
+
+    return use(middleware);
+  }, [use]);
+
+  return null;
+}
+
+
 
 // Include only the reset
 import "instantsearch.css/themes/reset.css";
@@ -70,6 +91,7 @@ const InstantSearchApp = ({ searchClient, indexId }: instantSearchParams) => {
         initialUiState={initialUIState}
       >
         <Configure hitsPerPage={12} clickAnalytics />
+        <InsightsMiddleware />
         <CustomSearchBox indexId={indexId} />
         <main>
           <div className="menu">
