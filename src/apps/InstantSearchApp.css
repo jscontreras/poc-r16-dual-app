@@ -1,0 +1,100 @@
+.search-is {
+  padding: 40px 20px;
+  border: 1px solid #aaa;
+  position: relative;
+  margin-top: 20px;
+}
+
+.search-is__app-id {
+  color: royalblue;
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  font-size: .9em;
+}
+
+.search-is main {
+  display: flex;
+  margin: 5px 0 25px;
+}
+
+.search-is .menu {
+  flex: 2;
+  border: dotted 1px lightgray;
+  margin: 0px 5px 0 0px;
+  padding: 10px;
+}
+
+
+.search-is .ais-Pagination {
+  margin-bottom: 25px;
+}
+
+.search-is .results {
+  flex: 6;
+}
+
+
+.search-is .hit {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+
+.search-is .hit-actions {
+  display: flex;
+}
+
+.search-is .hit-content {
+  padding: 0px 10px;
+  flex-basis: 70%;
+}
+
+.search-is .hit-picture {
+  position: relative;
+  display: block;
+  background-color: #efefef;
+}
+
+.search-is .hit-picture img {
+  height: auto;
+  width: auto;
+  max-width: 100px;
+  max-height: 150px;
+}
+
+.search-is .hit-type {
+  color: #888888;
+  font-size: 13px;
+}
+
+.search-is .hit-description span {
+  font-size: .75rem;
+}
+
+.search-is .ais-Hits-list {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.search-is .ais-Hits-item {
+  flex-basis: 150px;
+  padding: 0;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.search-is .ais-Pagination {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.search-is .brand-facets {
+  border-bottom: 1px solid #aaa;
+  margin-bottom: 10px;
+  padding: 10px 0;
+}

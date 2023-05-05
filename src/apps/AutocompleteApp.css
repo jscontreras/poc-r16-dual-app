@@ -1,0 +1,36 @@
+.search-bar {
+  display: flex;
+  justify-content: stretch;
+  border: 1px solid #aaa;
+  padding: 30px 20px 10px 10px;
+  position: relative;
+}
+
+.search-bar__catalog-selector {
+  margin-bottom: 20px;
+  flex-grow: 0;
+  flex-basis: 160px;
+  padding: 0 10px 0 0;
+}
+
+.search-bar__catalog-selector label {
+  font-size: .8em;
+}
+
+.search-bar__catalog-selector select {
+  font-size: 1em;
+}
+
+.search-bar__search-autocomplete {
+  flex-basis: max-content;
+  flex-grow: 10;
+  margin-top: 4px;
+}
+
+.search-bar__app-id {
+  color: red;
+  position: absolute;
+  top: 5px;
+  left: 15px;
+  font-size: .9em;
+}
