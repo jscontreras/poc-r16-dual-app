@@ -1,24 +1,30 @@
-import { useState } from 'react';
-import { autocomplete, getAlgoliaResults, Pragma, PragmaFrag, Render } from '@algolia/autocomplete-js';
-import { createElement, Fragment, useEffect, useRef } from 'react';
-import { createLocalStorageRecentSearchesPlugin } from '@algolia/autocomplete-plugin-recent-searches';
-import { render } from 'react-dom';
-import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query-suggestions';
-import { SearchClient } from 'algoliasearch/lite';
-import '@algolia/autocomplete-theme-classic';
+import { useState } from "react";
+import {
+  autocomplete,
+  getAlgoliaResults,
+  Pragma,
+  PragmaFrag,
+  Render,
+} from "@algolia/autocomplete-js";
+import { createElement, Fragment, useEffect, useRef } from "react";
+import { createLocalStorageRecentSearchesPlugin } from "@algolia/autocomplete-plugin-recent-searches";
+import { render } from "react-dom";
+import { createQuerySuggestionsPlugin } from "@algolia/autocomplete-plugin-query-suggestions";
+import { SearchClient } from "algoliasearch/lite";
+import "@algolia/autocomplete-theme-classic";
 import "./AutocompleteApp.css";
-import { ProductItem } from '../components/ProductItem';
-import { createAlgoliaInsightsPlugin } from '@algolia/autocomplete-plugin-algolia-insights';
-import { getQueryParam, updateUrlParameter } from '../lib/common';
-import { InsightsClient } from 'search-insights';
-import PubSub from 'pubsub-js';
+import { ProductItem } from "../components/ProductItem";
+import { createAlgoliaInsightsPlugin } from "@algolia/autocomplete-plugin-algolia-insights";
+import { getQueryParam, updateUrlParameter } from "../lib/common";
+import { InsightsClient } from "search-insights";
+import PubSub from "pubsub-js";
 
 // Constant for Events pub-sub
-export const QUERY_UPDATE_EVT = 'QUERY_UPDATE_EVT';
+export const QUERY_UPDATE_EVT = "QUERY_UPDATE_EVT";
 
 // Recent Search Plugin
 const recentSearchesPlugin = createLocalStorageRecentSearchesPlugin({
-  key: 'navbar',
+  key: "navbar",
   limit: 3,
 });
 
@@ -43,7 +49,11 @@ export declare type AutocompleteRenderer = {
 };
 
 // Using type override for typescript errors
-const myReactRenderer: AutocompleteRenderer = { createElement, Fragment, render };
+const myReactRenderer: AutocompleteRenderer = {
+  createElement,
+  Fragment,
+  render,
+};
 
 // Catalog type
 export type Catalog = {
@@ -51,21 +61,25 @@ export type Catalog = {
   catalogLabel: string;
   recordsIndex: string;
   suggestionsIndex: string;
-  searchPagePath:string;
+  searchPagePath: string;
 };
 
 type AutocompleteParams = {
-  catalogLabel: string,
-  catalogs: Catalog[],
-  searchPagePath: string,
-  searchClient: SearchClient,
-  insightsClient: InsightsClient
-}
+  catalogLabel: string;
+  catalogs: Catalog[];
+  searchClient: SearchClient;
+  insightsClient: InsightsClient;
+};
 
 /**
  * Auotomplete Search Bar
  */
-function AutocompleteApp({ catalogLabel, catalogs, searchClient, insightsClient }: AutocompleteParams) {
+function AutocompleteApp({
+  catalogLabel,
+  catalogs,
+  searchClient,
+  insightsClient,
+}: AutocompleteParams) {
   const [selectedOption, setSelectedOption] = useState(catalogs[0].catalogId);
   const [searchIndices, setSearchIndexes] = useState(catalogs[0]);
   const containerRef = useRef(null);
@@ -88,12 +102,13 @@ function AutocompleteApp({ catalogLabel, catalogs, searchClient, insightsClient 
   // Dropdown values switcher
   const handleOptionSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const catalogId = event.target.value;
-    const catalogConfig = catalogs.find(catalog => catalog.catalogId === catalogId);
+    const catalogConfig = catalogs.find(
+      (catalog) => catalog.catalogId === catalogId
+    );
     if (catalogConfig) {
       setSearchIndexes(catalogConfig);
       setSelectedOption(catalogConfig.catalogId);
     }
-
   };
   // Rendering autocomplete after component mounts
   useEffect(() => {
@@ -105,22 +120,29 @@ function AutocompleteApp({ catalogLabel, catalogs, searchClient, insightsClient 
       renderer: myReactRenderer,
       openOnFocus: true,
       insights: true,
-      placeholder: 'Search for Products',
+      placeholder: "Search for Products",
       onSubmit({ state }) {
-        updateUrlParameter('q', state.query);
+        updateUrlParameter("q", state.query);
 
         // Validate if you are in the searchPage (Otherwise redirect using q param)
         if (window.location.pathname !== searchIndices.searchPagePath) {
           window.location.href = `${searchIndices.searchPagePath}?q=${state.query}`;
         } else {
-          PubSub.publish(QUERY_UPDATE_EVT, state.query);
+          PubSub.publish(QUERY_UPDATE_EVT, {
+            query: state.query,
+            index: searchIndices.recordsIndex,
+          });
         }
       },
-      plugins: [querySuggestionsPlugin, recentSearchesPlugin, algoliaInsightsPlugin],
+      plugins: [
+        querySuggestionsPlugin,
+        recentSearchesPlugin,
+        algoliaInsightsPlugin,
+      ],
       getSources({ query }) {
         return [
           {
-            sourceId: 'products',
+            sourceId: "products",
             getItems() {
               return getAlgoliaResults({
                 searchClient,
@@ -138,10 +160,16 @@ function AutocompleteApp({ catalogLabel, catalogs, searchClient, insightsClient 
             },
             templates: {
               item({ item, components }) {
-                return <ProductItem hit={item} components={components} navigator={autocompleteInstance.navigator} />;
+                return (
+                  <ProductItem
+                    hit={item}
+                    components={components}
+                    navigator={autocompleteInstance.navigator}
+                  />
+                );
               },
               noResults() {
-                return 'No products matching.';
+                return "No products matching.";
               },
             },
           },
@@ -149,8 +177,8 @@ function AutocompleteApp({ catalogLabel, catalogs, searchClient, insightsClient 
       },
     });
     // Set the query value if available in url (doesn't trigger a search)
-    if (getQueryParam('q') !== '') {
-      autocompleteInstance.setQuery(getQueryParam('q'));
+    if (getQueryParam("q") !== "") {
+      autocompleteInstance.setQuery(getQueryParam("q"));
     }
     return () => {
       autocompleteInstance.destroy();
@@ -158,18 +186,28 @@ function AutocompleteApp({ catalogLabel, catalogs, searchClient, insightsClient 
     // Refresh when The index is switched
   }, [searchIndices]);
 
-  return <div id="search-bar" className='search-bar'>
-    <span className='search-bar__app-id'>{`<Search Bar App>`}</span>
-    <div className='search-bar__catalog-selector'>
-      <label htmlFor="catalog-select">{catalogLabel}: </label>
-      <select id="catalog-select" value={selectedOption} onChange={handleOptionSelect}>
-        {catalogs.map((catalog => {
-          return <option key={catalog.catalogId} value={catalog.catalogId}>{catalog.catalogLabel}</option>
-        }))}
-      </select>
+  return (
+    <div id="search-bar" className="search-bar">
+      <span className="search-bar__app-id">{`<Search Bar App>`}</span>
+      <div className="search-bar__catalog-selector">
+        <label htmlFor="catalog-select">{catalogLabel}: </label>
+        <select
+          id="catalog-select"
+          value={selectedOption}
+          onChange={handleOptionSelect}
+        >
+          {catalogs.map((catalog) => {
+            return (
+              <option key={catalog.catalogId} value={catalog.catalogId}>
+                {catalog.catalogLabel}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <div ref={containerRef} className="search-bar__search-autocomplete" />
     </div>
-    <div ref={containerRef} className='search-bar__search-autocomplete' />
-  </div>;
+  );
 }
 
 export default AutocompleteApp;
