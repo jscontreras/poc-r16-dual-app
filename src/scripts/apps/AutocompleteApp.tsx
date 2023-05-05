@@ -71,6 +71,16 @@ type AutocompleteParams = {
   insightsClient: InsightsClient;
 };
 
+function getActiveCatalog(catalogs: Catalog[]):number {
+  let pos = 0;
+  catalogs.forEach((catalog, i) => {
+    if (window.location.pathname === catalog.searchPagePath) {
+      pos = i;
+    }
+  })
+  return pos;
+}
+
 /**
  * Auotomplete Search Bar
  */
@@ -80,8 +90,10 @@ function AutocompleteApp({
   searchClient,
   insightsClient,
 }: AutocompleteParams) {
-  const [selectedOption, setSelectedOption] = useState(catalogs[0].catalogId);
-  const [searchIndices, setSearchIndexes] = useState(catalogs[0]);
+  // Check if there is an active catalog
+  const initialIndex = getActiveCatalog(catalogs);
+  const [selectedOption, setSelectedOption] = useState(catalogs[initialIndex].catalogId);
+  const [searchIndices, setSearchIndexes] = useState(catalogs[initialIndex]);
   const containerRef = useRef(null);
 
   // Query Suggestions Plugin (variates depending on the selected Index)

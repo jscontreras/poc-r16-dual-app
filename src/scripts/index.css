@@ -81,3 +81,8 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+nav {
+  text-align: left;
+  margin-bottom: 10px;
+}

@@ -22,14 +22,14 @@ const catalogs: Catalog[] = [
     catalogLabel: "All Products",
     recordsIndex: "instant_search",
     suggestionsIndex: "instant_search_demo_query_suggestions",
-    searchPagePath: "/",
+    searchPagePath: "/search/",
   },
   {
     catalogId: "expensiveProducts",
     catalogLabel: "Expensive Products",
     recordsIndex: "instant_search_price_desc",
     suggestionsIndex: "instant_search_query_suggestions_test",
-    searchPagePath: "/",
+    searchPagePath: "/search-vip/",
   },
 ];
 
@@ -65,7 +65,7 @@ function initializeSearchApps() {
 
   // Injects search results app2 if div is available in the DOM
   const searchAppContainer2 = document.getElementById("search-results-expensive-products");
-  if (searchAppContainer) {
+  if (searchAppContainer2) {
     ReactDOM.render(
       <InstantSearchApp indexId="instant_search_price_desc" searchClient={searchClient} />,
       searchAppContainer2
