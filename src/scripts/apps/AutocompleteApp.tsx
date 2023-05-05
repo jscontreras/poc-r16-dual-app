@@ -71,7 +71,7 @@ type AutocompleteParams = {
   insightsClient: InsightsClient;
 };
 
-function getActiveCatalog(catalogs: Catalog[]):number {
+function getActiveCatalog(catalogs: Catalog[]): number {
   let pos = 0;
   catalogs.forEach((catalog, i) => {
     if (window.location.pathname === catalog.searchPagePath) {
@@ -113,15 +113,31 @@ function AutocompleteApp({
 
   // Dropdown values switcher
   const handleOptionSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    // Get the new selected value
     const catalogId = event.target.value;
+    // Find if there is a configuration that matches the new selected value
     const catalogConfig = catalogs.find(
       (catalog) => catalog.catalogId === catalogId
     );
+    // If a configuration is found
     if (catalogConfig) {
-      setSearchIndexes(catalogConfig);
-      setSelectedOption(catalogConfig.catalogId);
+      // Ask if I'm in a search result page or not.
+      const resultPage = catalogs.find(
+        (catalog) => catalog.searchPagePath === window.location.pathname
+      );
+
+      if (resultPage) {
+        // get the current query
+        const query = getQueryParam('q');
+        // redirect to the corresponding index + query
+        window.location.href = `${catalogConfig.searchPagePath}?q=${query}`;
+      } else {
+        setSearchIndexes(catalogConfig);
+        setSelectedOption(catalogConfig.catalogId);
+      }
     }
   };
+
   // Rendering autocomplete after component mounts
   useEffect(() => {
     if (!containerRef.current) {
