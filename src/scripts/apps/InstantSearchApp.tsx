@@ -69,7 +69,7 @@ const InstantSearchApp = ({ searchClient, indexId }: instantSearchParams) => {
         routing={false}
         initialUiState={initialUIState}
       >
-        <Configure hitsPerPage={12} />
+        <Configure hitsPerPage={12} clickAnalytics />
         <CustomSearchBox indexId={indexId} />
         <main>
           <div className="menu">
