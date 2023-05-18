@@ -1,27 +1,7 @@
 import { SearchClient } from "algoliasearch/lite";
 import { ClearRefinements, CurrentRefinements, DynamicWidgets, RefinementList, useInstantSearch, useSearchBox } from "react-instantsearch-hooks-web";
 import PubSub from "pubsub-js";
-import aa from 'search-insights';
-import { createInsightsMiddleware } from 'instantsearch.js/es/middlewares';
-
-// Set user token (this is dynamic!)
-aa('setUserToken', 'ma-user-999');
-// Set Insights Middleware
-function InsightsMiddleware() {
-  const { use } = useInstantSearch();
-
-  useEffect(() => {
-    const middleware = createInsightsMiddleware({
-      insightsClient: aa,
-    });
-
-    return use(middleware);
-  }, [use]);
-
-  return null;
-}
-
-
+import { InsightsClient } from "search-insights";
 
 // Include only the reset
 import "instantsearch.css/themes/reset.css";
@@ -31,7 +11,6 @@ import "./InstantSearchApp.css";
 import {
   HierarchicalMenu,
   Hits,
-  Configure,
   Pagination,
   InstantSearch,
 } from "react-instantsearch-hooks-web";
@@ -43,6 +22,7 @@ import { QUERY_UPDATE_EVT } from "./AutocompleteApp";
 type instantSearchParams = {
   searchClient: SearchClient;
   indexId: string;
+  insightsClient: InsightsClient
 };
 
 /**
@@ -70,14 +50,17 @@ function CustomSearchBox({ indexId }: any) {
 /**
  * Main InstantSearch App component.
  */
-const InstantSearchApp = ({ searchClient, indexId }: instantSearchParams) => {
+const InstantSearchApp = ({ searchClient, indexId, insightsClient }: instantSearchParams) => {
   // Synchronize search via URL during the page load
   const initialUIState: any = {};
   // Set the query value if available in url (doesn't trigger a search)
   const initialQuery = getQueryParam("q");
-  initialUIState[indexId] = {
-    query: initialQuery,
-  };
+  if (initialQuery !== "") {
+    initialUIState[indexId] = {
+      query: initialQuery,
+    };
+  }
+
 
   return (
     <div className="search-is">
@@ -89,9 +72,10 @@ const InstantSearchApp = ({ searchClient, indexId }: instantSearchParams) => {
         indexName={indexId}
         routing={false}
         initialUiState={initialUIState}
+        insights={{
+          insightsClient: insightsClient,
+        }}
       >
-        <Configure hitsPerPage={12} clickAnalytics />
-        <InsightsMiddleware />
         <CustomSearchBox indexId={indexId} />
         <main>
           <div className="menu">

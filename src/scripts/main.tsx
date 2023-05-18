@@ -13,8 +13,9 @@ const apiKey = "6be0576ff61c053d5f9a3225e2a90f76";
 // Initializing Search Client
 const searchClient = algoliasearch(appId, apiKey);
 
-// Insights Analytics Client.
-insightsClient("init", { appId, apiKey });
+// Insights Analytics Client (Setting User Toeken Dynamically);
+insightsClient("init", { appId, apiKey, useCookie: false, userToken: 'ma-user-999' });
+
 
 const catalogs: Catalog[] = [
   {
@@ -57,7 +58,7 @@ function initializeSearchApps() {
   const searchAppContainer = document.getElementById("search-results-products");
   if (searchAppContainer) {
     ReactDOM.render(
-      <InstantSearchApp indexId="instant_search" searchClient={searchClient} />,
+      <InstantSearchApp indexId="instant_search" searchClient={searchClient} insightsClient={insightsClient} />,
       searchAppContainer
     );
   }
@@ -67,7 +68,7 @@ function initializeSearchApps() {
   const searchAppContainer2 = document.getElementById("search-results-expensive-products");
   if (searchAppContainer2) {
     ReactDOM.render(
-      <InstantSearchApp indexId="instant_search_price_desc" searchClient={searchClient} />,
+      <InstantSearchApp indexId="instant_search_price_desc" searchClient={searchClient} insightsClient={insightsClient}/>,
       searchAppContainer2
     );
   }
